@@ -167,6 +167,18 @@ Snake.prototype = {
     var newHead = { x: head.x, y: head.y };
     var newNext = next==false ? false : { x: next.x, y: next.y };
 
+    // Warp to the other side of the board if the newHead
+    // would fall outside of the game boundaries
+    if(newHead.x >= game.width) {
+      newHead.x = 0;
+    } else if(newHead.x < 0 ) {
+      newHead.x = game.width;
+    } else if(newHead.y >= game.height ) {
+      newHead.y = 0;
+    } else if(newHead.y < 0 ) {
+      newHead.y = game.height;
+    }
+
     var collide = false;
 
     if(this.moving && game.mode === "game" && futureSnakes) {
@@ -203,15 +215,6 @@ Snake.prototype = {
   // We need to check collisions against the upcoming position of each snake,
   // and not the current one.
   processCollisions: function(futureSnakes, head, newHead, newNext) {
-    // check for collisions with the level wall
-    var wallCollision  = (head.x >= game.width - 1 && this.direction == "right") |
-                         (head.y >= game.height - 1 && this.direction == "down") |
-                         (head.x <= 0 && this.direction == "left") |
-                         (head.y <= 0 && this.direction == "up");
-
-    if (wallCollision) {
-      return true;
-    }
 
     // Check collisions with apples or bombs. These are soft
     // scollisions and don't lead to actual collision detection
